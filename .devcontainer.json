@@ -1,0 +1,35 @@
+{
+	"name": "finetune-groot",
+	"image": "gr00t-dev",
+	"workspaceFolder": "/workspace/gr00t",
+	"runArgs": [
+		"--name=devcontainer",
+		"--gpus",
+		"all",
+		"--entrypoint",
+		"/bin/bash"
+	],
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/workspace/gr00t/finetune-groot,type=bind",
+	],
+	"remoteEnv": {
+		"WANDB_API_KEY": "${localEnv:WANDB_API_KEY}",
+		"WANDB_USERNAME": "${localEnv:WANDB_USERNAME}",
+		"HF_TOKEN": "${localEnv:HF_TOKEN}"
+	},
+	// "postStartCommand": "cd /workspace/finetune-groot",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.shellArgs.linux": ["-c", "/workspace/gr00t/.venv/bin/activate && exec bash"]
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"ms-azuretools.vscode-docker",
+                "lfs.vscode-emacs-friendly",
+                "github.copilot-chat"
+			]
+		}
+	}
+}
