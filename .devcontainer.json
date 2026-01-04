@@ -6,6 +6,7 @@
 		"--name=devcontainer",
 		"--gpus",
 		"all",
+		"--shm-size=32g",
 		"--entrypoint",
 		"/bin/bash"
 	],
