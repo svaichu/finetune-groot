@@ -1,1 +1,8 @@
 __pycache__/*
+
+# fresh-start additions
+vendor/
+outputs/*.png
+*.sif
+__pycache__/
+*.pyc

@@ -1,0 +1,6 @@
+LSY-lab/stack_without_ft_tact_v4
+Pinned Hub commit SHA: 10f54171c5b08c68bd4af114e4c9a8661ca291d2
+Downloaded to (HPC): /hpcwork/yn030245/gr00t-ft/data/stack_without_ft_tact_v4
+Episodes: 51, Frames: 12244
+Episode length: min=193 max=357 mean=240.1 (frames @ 15 fps)
+Task: [{'task_index': 0, 'task': 'pick the lego block.'}]

@@ -1,0 +1,19 @@
+{
+  "state": {
+    "cartesian": {"start": 0, "end": 6},
+    "gripper": {"start": 6, "end": 7},
+    "joints": {"start": 7, "end": 14},
+    "target": {"start": 14, "end": 20}
+  },
+  "action": {
+    "eef": {"start": 0, "end": 6},
+    "gripper": {"start": 6, "end": 7}
+  },
+  "video": {
+    "primary": {"original_key": "observation.images.primary"},
+    "wrist": {"original_key": "observation.images.wrist"}
+  },
+  "annotation": {
+    "human.task_description": {"original_key": "task_index"}
+  }
+}

@@ -1,0 +1,28 @@
+paths:
+  base_model_path: nvidia/GR00T-N1.7-3B
+  dataset_path: /hpcwork/yn030245/gr00t-ft/data/stack_without_ft_tact_v4
+  embodiment_tag: NEW_EMBODIMENT
+  modality_config_path: /home/yn030245/finetune-groot/configs/embodiment_config.py
+  output_dir: /hpcwork/yn030245/gr00t-ft/checkpoints
+
+tuning:
+  tune_llm: false
+  tune_visual: false
+  tune_projector: true
+  tune_diffusion_model: true
+
+training:
+  global_batch_size: 32
+  dataloader_num_workers: 4
+  learning_rate: 1.0e-4
+  gradient_accumulation_steps: 1
+  save_steps: 1000
+  save_total_limit: 5
+  num_gpus: 1
+  max_steps: 10000
+  warmup_ratio: 0.05
+
+logging:
+  use_wandb: true
+  wandb_project: finetune-gr00t-stack-tact
+  experiment_name: stack_tact_v4_n1p7
