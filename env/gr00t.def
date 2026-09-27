@@ -1,0 +1,63 @@
+Bootstrap: docker
+From: nvidia/cuda:12.8.0-devel-ubuntu24.04
+
+%files
+    /home/yn030245/finetune-groot/vendor/Isaac-GR00T /opt/isaac-gr00t
+    /home/yn030245/training_cfgs /opt/src/training_cfgs
+    /home/yn030245/robotdataset /opt/src/robotdataset
+
+%environment
+    export GR00T_GLOBAL_VENV=/opt/gr00t-venv
+    export PATH=/opt/gr00t-venv/bin:/usr/local/cuda/bin:$PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    export VIRTUAL_ENV=/opt/gr00t-venv
+    export CUDA_HOME=/usr/local/cuda
+    export MUJOCO_GL=egl
+    export PYOPENGL_PLATFORM=egl
+
+%post
+    set -eu
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential ca-certificates git curl wget \
+        python3.12 python3.12-venv python3.12-dev python3-pip python-is-python3 \
+        cmake ninja-build pkg-config pybind11-dev \
+        ffmpeg libavdevice-dev libavfilter-dev libavformat-dev libavcodec-dev \
+        libavutil-dev libswresample-dev libswscale-dev libegl1
+    rm -rf /var/lib/apt/lists/*
+
+    # pin: apt's ffmpeg on Ubuntu 24.04 is 6.1.x -- torchcodec 0.8.0 requires
+    # FFmpeg 4-7, NOT FFmpeg 8 (see outputs/gr00t_contract.md). Verify below.
+    ffmpeg -version | head -1
+
+    python -m pip install --upgrade --break-system-packages --ignore-installed pip setuptools wheel
+    curl -LsSf https://astral.sh/uv/0.8.14/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh
+
+    export GR00T_GLOBAL_VENV=/opt/gr00t-venv
+    export UV_PROJECT_ENVIRONMENT=/opt/gr00t-venv
+
+    cd /opt/isaac-gr00t
+    UV_HTTP_TIMEOUT=300 UV_CONCURRENT_DOWNLOADS=4 uv sync --frozen --no-install-project --extra dev --no-cache
+
+    # Install the gr00t project itself (non-editable copy baked into the image)
+    /opt/gr00t-venv/bin/pip install --no-deps /opt/isaac-gr00t
+
+    # training_cfgs and robotdataset -- baked in as regular installs from the
+    # source copied at build time (not editable, so the image is self-contained
+    # and does not depend on the host's home directory at runtime).
+    /opt/gr00t-venv/bin/pip install --no-deps /opt/src/training_cfgs
+    /opt/gr00t-venv/bin/pip install /opt/src/robotdataset[hf] || /opt/gr00t-venv/bin/pip install /opt/src/robotdataset
+
+    /opt/gr00t-venv/bin/pip install wandb
+
+    mkdir -p /workspace
+    ln -sfn /opt/gr00t-venv /workspace/.venv
+
+%runscript
+    exec /opt/gr00t-venv/bin/python "$@"
+
+%labels
+    Author finetune-groot-fresh-start
+    Base nvidia/cuda:12.8.0-devel-ubuntu24.04
+    GR00T_commit 51d4c89
