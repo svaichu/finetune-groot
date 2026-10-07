@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finetune-groot"
+version = "0.1.0"
+description = "GR00T-N1.7 fine-tuning on LSY-lab/stack_without_ft_tact_v4 via robotdataset + training_cfgs."
+authors = [
+    { name = "Vaishnavahari Seenivasan", email = "vaishnavahari.seenivasan@rwth-aachen.de" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch==2.9.0",
+    "transformers==4.57.3",
+    "flash-attn==2.8.3",
+    "numpy==1.26.4",
+    "pandas==2.2.3",
+    "wandb==0.23.0",
+    "tensordict==0.14.2",
+    "torchrl==0.14.0",
+    "huggingface_hub",
+    "robotdataset[hf]",
+    "training-cfgs",
+    # gr00t (Isaac-GR00T) is vendored at vendor/Isaac-GR00T, not published --
+    # installed editable via [tool.uv.sources] below.
+    "gr00t",
+]
+
+[tool.uv.sources]
+robotdataset = { path = "../robotdataset", editable = true }
+training-cfgs = { path = "../training_cfgs", editable = true }
+gr00t = { path = "vendor/Isaac-GR00T", editable = true }
+
+[tool.setuptools.packages.find]
+include = ["finetune_groot*"]
