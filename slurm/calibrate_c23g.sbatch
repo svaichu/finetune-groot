@@ -11,7 +11,11 @@ set -eu
 module load FFmpeg/7.1.2
 export PATH=$HOME/.local/bin:$PATH
 
-VENV=$HPCWORK/gr00t-ft/venvs/gr00t
+# Venv convention: all venvs live under $WORK/venv/<name> (GPFS -- suited to
+# the tens of thousands of small files a venv is; $HPCWORK is Lustre, tuned
+# for few-large-file bandwidth and used for the dataset/checkpoints/caches
+# instead).
+VENV=$WORK/venv/finetune-groot
 export PATH="$VENV/bin:$PATH"
 
 # HF/torch caches -- these are set in ~/.zshrc but Slurm batch shells never
