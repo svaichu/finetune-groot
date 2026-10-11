@@ -1,0 +1,38 @@
+# Config for finetune_vendor.ipynb -- NVIDIA's launch_finetune.py driven from a notebook.
+#
+# Read with training_cfgs.Config.from_file(); Config.flatten() renders every
+# field below as a bare kebab-case flag for launch_finetune.py, so each field name
+# must be a FinetuneConfig field (vendor/Isaac-GR00T/gr00t/configs/finetune_config.py).
+# The `data:` group is read by the notebook's staging cell and is NOT passed to
+# launch_finetune.py (the notebook flattens only `model` and `training`).
+# Calibration-scale values (200 steps); configs/finetune.yaml holds the full-run values.
+
+model:
+  base_model_path: nvidia/GR00T-N1.7-3B
+  embodiment_tag: NEW_EMBODIMENT
+  modality_config_path: /home/yn030245/finetune-groot/finetune_groot/embodiment_config.py
+  tune_llm: false
+  tune_visual: false
+  tune_projector: true
+  tune_diffusion_model: true
+
+data:
+  repo_id: LSY-lab/stack_without_ft_tact_v4
+  revision: 10f54171c5b08c68bd4af114e4c9a8661ca291d2  # pinned Hub commit
+  modality_json: /home/yn030245/finetune-groot/configs/modality.json  # copied into <dataset>/meta/
+
+training:
+  dataset_path: /hpcwork/yn030245/gr00t-ft/data/stack_without_ft_tact_v4
+  output_dir: /hpcwork/yn030245/gr00t-ft/checkpoints  # run lands in <output_dir>/<experiment_name>/
+  experiment_name: vendor_notebook_run
+  global_batch_size: 32
+  dataloader_num_workers: 4
+  learning_rate: 1.0e-4
+  gradient_accumulation_steps: 1
+  max_steps: 200
+  warmup_ratio: 0.05
+  save_steps: 200
+  save_total_limit: 1
+  num_gpus: 1
+  use_wandb: true
+  wandb_project: finetune-gr00t-stack-tact

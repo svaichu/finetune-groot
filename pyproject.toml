@@ -31,7 +31,10 @@ dependencies = [
     "torchrl==0.14.0",
     "huggingface_hub",
     "robotdataset[hf]",
-    "training-cfgs",
+    # >=0.2.1 for Config.flatten()/to_argv(), which scripts/run_finetune.py uses
+    # to render the trainer's flat kebab-case argv. From PyPI, not the local
+    # ../training_cfgs checkout (still at 0.2.0, pre-flatten).
+    "training-cfgs>=0.2.1",
     # gr00t (Isaac-GR00T) is vendored at vendor/Isaac-GR00T, not published --
     # installed editable via [tool.uv.sources] below.
     "gr00t",
@@ -39,7 +42,6 @@ dependencies = [
 
 [tool.uv.sources]
 robotdataset = { path = "../robotdataset", editable = true }
-training-cfgs = { path = "../training_cfgs", editable = true }
 gr00t = { path = "vendor/Isaac-GR00T", editable = true }
 
 [tool.setuptools.packages.find]
