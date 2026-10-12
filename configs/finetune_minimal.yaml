@@ -2,13 +2,13 @@
 # path and split from here via training_cfgs.Config.from_file(); nothing is
 # hardcoded in the notebook itself. Calibration-scale values (200 steps,
 # batch 8) live here, separate from configs/finetune.yaml which holds the
-# full-run values for scripts/run_finetune.py. Field names mirror
+# full-run values for finetune_groot/run_finetune.py. Field names mirror
 # finetune.yaml (HF Trainer / FinetuneConfig naming) wherever they overlap.
 
 model:
   base_model_path: nvidia/GR00T-N1.7-3B
   embodiment_tag: NEW_EMBODIMENT
-  modality_config_path: /home/yn030245/finetune-groot/embodiment_config.py
+  modality_config_path: /home/yn030245/finetune-groot/finetune_groot/embodiment_config.py
   tune_llm: false
   tune_visual: false
   tune_projector: true

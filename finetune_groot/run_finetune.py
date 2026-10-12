@@ -7,10 +7,11 @@ values as the flat, kebab-case argv that NVIDIA's tyro-based
 launch_finetune.py expects. The tested trainer path therefore runs
 completely unmodified -- only its inputs come from our YAML.
 
-Usage:
-    python scripts/run_finetune.py --config configs/finetune.yaml
-    python scripts/run_finetune.py --config configs/finetune.yaml --training.max_steps 200
-    python scripts/run_finetune.py --config configs/finetune.yaml --model.tune_llm true
+Usage (`finetune-groot` is the console script declared in pyproject.toml;
+prefix with `uv run` outside an activated venv):
+    finetune-groot --config configs/finetune.yaml
+    finetune-groot --config configs/finetune.yaml --training.max_steps 200
+    finetune-groot --config configs/finetune.yaml --model.tune_llm true
 """
 
 import subprocess
@@ -32,7 +33,7 @@ def main() -> None:
     print("Launching:", " ".join(cmd))
 
     # WANDB_API_KEY / HF_TOKEN are inherited from the calling environment,
-    # never read from this script or the yaml -- see slurm/calibrate_c23g.sbatch.
+    # never read from this script or the yaml -- see calibrate_c23g.sbatch.
     subprocess.run(cmd, check=True)
 
 

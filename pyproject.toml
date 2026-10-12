@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,38 +11,57 @@ authors = [
 ]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.12"
+
+# Dictated by vendor/Isaac-GR00T: the N1.7 release pins requires-python = "==3.10.*".
+# Do not widen this without re-reading vendor/Isaac-GR00T/pyproject.toml first --
+# a mismatch here is what broke the previous environment.
+requires-python = "==3.10.*"
+
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
+# Only what this repo imports directly. Every heavy pin -- torch, torchvision,
+# torchcodec, transformers, numpy, pandas, wandb, matplotlib, huggingface_hub,
+# flash-attn -- is declared by the vendored gr00t package, so there is exactly
+# one source of truth for them and no second list to keep in sync.
 dependencies = [
-    "torch==2.9.0",
-    "transformers==4.57.3",
-    "flash-attn==2.8.3",
-    "numpy==1.26.4",
-    "pandas==2.2.3",
-    "wandb==0.23.0",
-    "tensordict==0.14.2",
-    "torchrl==0.14.0",
-    "huggingface_hub",
-    "robotdataset[hf]",
-    # >=0.2.1 for Config.flatten()/to_argv(), which scripts/run_finetune.py uses
-    # to render the trainer's flat kebab-case argv. From PyPI, not the local
-    # ../training_cfgs checkout (still at 0.2.0, pre-flatten).
-    "training-cfgs>=0.2.1",
-    # gr00t (Isaac-GR00T) is vendored at vendor/Isaac-GR00T, not published --
-    # installed editable via [tool.uv.sources] below.
-    "gr00t",
+    "gr00t",                    # vendored at vendor/Isaac-GR00T (not on PyPI)
+    "robotdataset[hf]>=0.3.0",  # see [tool.uv.sources] note below
+    "training-cfgs>=0.2.1",     # Config.flatten()/to_argv(), used by run_finetune
 ]
 
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+finetune-groot = "finetune_groot.run_finetune:main"
+
 [tool.uv.sources]
-robotdataset = { path = "../robotdataset", editable = true }
 gr00t = { path = "vendor/Isaac-GR00T", editable = true }
+
+# robotdataset 0.3.0 (gr00t_statistics, relative-action stats) is not on PyPI yet,
+# so it is consumed from a sibling checkout: <parent>/robotdataset next to this repo.
+# Delete this line once 0.3.0 is published and `pip install` alone will suffice.
+robotdataset = { path = "../robotdataset", editable = true }
+
+# flash-attn is on PyPI, but sdist-only -- it has never published a binary wheel
+# for any version. A plain resolve therefore compiles the CUDA kernels from
+# source (~1 h, needs nvcc and torch present at build time). Dao-AILab ships
+# prebuilt wheels as GitHub release assets instead, keyed by cpython/torch/cuda/abi;
+# this is the one vendor/Isaac-GR00T itself selects for cp310 + torch 2.7 + x86_64.
+# It is only a uv hint -- the pin (2.7.4.post1) still comes from gr00t.
+# Pre-Ampere GPUs (e.g. Colab T4, sm75) cannot run it: set
+# `use_flash_attention: false` in the model config and gr00t falls back to sdpa.
+flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" }
 
 [tool.setuptools.packages.find]
 include = ["finetune_groot*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

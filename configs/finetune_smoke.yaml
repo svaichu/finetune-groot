@@ -1,0 +1,35 @@
+# Smoke-scale fine-tune run for the finetune-groot script (finetune_groot/run_finetune.py).
+#
+# Purpose: prove the whole path end to end on one GPU after the vendor/Isaac-GR00T
+# move to the n1.7-release tag -- checkpoint load, modality registration, dataset
+# sharding, a handful of optimiser steps, one checkpoint write. Not a training run:
+# 50 steps at batch 8 is far too short to learn anything.
+#
+# Every field below is a FinetuneConfig field on the n1.7-release tag
+# (vendor/Isaac-GR00T/gr00t/configs/finetune_config.py). Config.flatten() renders
+# them as bare kebab-case flags for launch_finetune.py.
+
+model:
+  base_model_path: nvidia/GR00T-N1.7-3B
+  embodiment_tag: NEW_EMBODIMENT
+  # Registers NEW_EMBODIMENT; same module every config in configs/ points at.
+  modality_config_path: /home/yn030245/finetune-groot/finetune_groot/embodiment_config.py
+  tune_llm: false
+  tune_visual: false
+  tune_projector: true
+  tune_diffusion_model: true
+
+training:
+  dataset_path: /hpcwork/yn030245/gr00t-ft/data/stack_without_ft_tact_v4
+  output_dir: /hpcwork/yn030245/gr00t-ft/checkpoints
+  experiment_name: smoke_n1p7_20261012
+  global_batch_size: 8
+  dataloader_num_workers: 4
+  learning_rate: 1.0e-4
+  gradient_accumulation_steps: 1
+  max_steps: 50
+  warmup_ratio: 0.05
+  save_steps: 50
+  save_total_limit: 1
+  num_gpus: 1
+  use_wandb: false

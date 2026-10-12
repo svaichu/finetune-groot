@@ -1,6 +1,6 @@
 # GR00T-N1.7 fine-tune run definition: model half + training half.
 #
-# Loaded by scripts/run_finetune.py through training_cfgs.Config, which gives
+# Loaded by finetune_groot/run_finetune.py (`finetune-groot`) through training_cfgs.Config, which gives
 # every key below a typed `--<group>.<field>` CLI override for free. The group
 # names are organisational only -- Config.flatten() renders bare kebab-case
 # flags, so each field name must match a FinetuneConfig field
@@ -9,7 +9,7 @@
 model:
   base_model_path: nvidia/GR00T-N1.7-3B
   embodiment_tag: NEW_EMBODIMENT
-  modality_config_path: /home/yn030245/finetune-groot/configs/embodiment_config.py
+  modality_config_path: /home/yn030245/finetune-groot/finetune_groot/embodiment_config.py
   tune_llm: false
   tune_visual: false
   tune_projector: true

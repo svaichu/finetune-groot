@@ -31,13 +31,13 @@ CALIB_DIR=$HPCWORK/gr00t-ft/checkpoints/calibration_$SLURM_JOB_ID
 mkdir -p "$CALIB_DIR"
 
 cd ~/finetune-groot
-python scripts/run_finetune.py \
+finetune-groot \
     --config configs/finetune.yaml \
     --training.max_steps 200 \
     --training.save_steps 200 \
     --training.save_total_limit 1 \
-    --paths.output_dir "$CALIB_DIR" \
-    --logging.experiment_name "calib_${SLURM_JOB_ID}"
+    --training.output_dir "$CALIB_DIR" \
+    --training.experiment_name "calib_${SLURM_JOB_ID}"
 
 echo "=== calibration run complete ==="
 ls -la "$CALIB_DIR"
