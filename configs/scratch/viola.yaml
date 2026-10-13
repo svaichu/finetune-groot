@@ -1,0 +1,33 @@
+# Run config for finetune_scratch.ipynb (Open X-Embodiment viola).
+# Select it with FINETUNE_CONFIG=configs/scratch/viola.yaml. The notebook reads every hyperparameter,
+# path and split from this file via training_cfgs.Config.from_file(); nothing is hardcoded in it.
+# The dataset itself (loader, its arguments, which modalities feed the model and in which order, action
+# representation, windows) is described by the modality file named under `data`, loaded by Gr00tAdapter.
+
+model:
+  base_model_path: nvidia/GR00T-N1.7-3B
+  embodiment_tag: NEW_EMBODIMENT
+  tune_llm: false
+  tune_visual: false
+  tune_projector: true
+  tune_diffusion_model: true
+  load_bf16: true
+
+data:
+  modality_file: configs/scratch/viola.modality.yaml  # relative to the repo root
+  # ints or "a:b" half-open ranges; the held-out episodes never take part in the normalisation statistics
+  train_episodes: ["0:120"]
+  val_episodes: ["120:135"]
+
+training:
+  output_dir: /hpcwork/yn030245/gr00t-ft/checkpoints
+  experiment_name: viola_notebook_run  # checkpoints land in <output_dir>/<experiment_name>/
+  global_batch_size: 8
+  learning_rate: 1.0e-4
+  max_steps: 200
+  warmup_ratio: 0.05
+  max_grad_norm: 1.0
+  save_steps: 100
+  logging_steps: 10
+  use_wandb: true
+  wandb_project: finetune-gr00t-oxe
