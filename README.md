@@ -1,10 +1,10 @@
 # finetune-groot
 
-GR00T-N1.7 fine-tuning on `LSY-lab/stack_without_ft_tact_v4`, driven by
-[`robotdataset`](https://github.com/svaichu/robotdataset) loaders and
+GR00T-N1.7 fine-tuning on [`robotdataset`](https://github.com/svaichu/robotdataset) datasets
+(`LSY-lab/stack_without_ft_tact_v4`, Open X-Embodiment `viola`, ...), driven by `robotdataset` loaders and
 [`training_cfgs`](https://pypi.org/project/training-cfgs/) YAML configs.
-NVIDIA's trainer runs unmodified from `vendor/Isaac-GR00T`; this repo only
-supplies the dataset adapter, the modality spec and the config plumbing.
+NVIDIA's trainer runs unmodified from `vendor/Isaac-GR00T`; this repo supplies the notebook, the run files and the
+config plumbing, and `robotdataset` supplies the dataset handling (dataset info and the GR00T model adapter).
 
 ## Version contract
 
@@ -33,6 +33,50 @@ PyPI yet, and until it is merged into `devel` it lives on the branch `feature/mo
 ```bash
 git -C ../robotdataset fetch origin feature/model-adapters && git -C ../robotdataset switch feature/model-adapters
 ```
+
+## Fine-tuning on any `robotdataset` dataset
+
+`finetune_scratch.ipynb` trains GR00T-N1.7 on whatever `robotdataset` can load (`LeRobotVideoDataset`,
+`OXEDataset`, `Table30v2Dataset`, ...). The notebook never opens a dataset's `meta/*.json`; the dataset is only
+handled by `robotdataset`, in two layers that live in that package:
+
+1. **Dataset info** (`robotdataset.info`) lists every modality a loader provides as an editable YAML.
+2. **Model adapter** (`robotdataset.adapters.gr00t.Gr00tAdapter`) reads the edited YAML, builds the loader with the
+   sampling windows the selection needs, produces the GR00T `ModalityConfig`s and `VLAStepData`, and computes the
+   normalisation statistics the processor needs (from the training loader, in memory).
+
+To train on a new dataset:
+
+```bash
+# 1. list the modalities (a few episodes are enough) and write the default YAML
+python -m robotdataset.info --loader OXEDataset --kwargs '{"dataset_name": "viola"}' \
+    --episodes 0:8 --adapter gr00t -o configs/scratch/my_dataset.modality.yaml
+
+# 2. edit it: `use: true` on the modalities the model should get, their order, names, `split` for a vector
+#    leaf that packs several groups, and the action representation in the `gr00t:` block
+# 3. copy configs/scratch/viola.yaml to configs/scratch/my_dataset.yaml; set data.modality_file, the train and
+#    validation episodes and the training hyperparameters
+# 4. run the notebook on that run file
+FINETUNE_CONFIG=configs/scratch/my_dataset.yaml jupyter lab finetune_scratch.ipynb
+```
+
+| file | holds |
+|---|---|
+| `configs/scratch/<name>.yaml` | run file, read with `training_cfgs.Config`: model, training, `data.train_episodes` / `data.val_episodes` (ints or `"a:b"` ranges), `data.modality_file` |
+| `configs/scratch/<name>.modality.yaml` | dataset-info file: loader and arguments, modalities picked and ordered, action representation, windows |
+
+Shipped examples: `stack_tact_v4` (`LeRobotVideoDataset`, EEF action `RELATIVE` to the state `cartesian`,
+gripper `ABSOLUTE`) and `viola` (`OXEDataset`, two cameras, joint + gripper state, delta-command actions, language
+from the dataset). Statistics and the position of every group inside the assembled state and action vectors come
+from the adapter (`adapter.index_map()`); each checkpoint also receives the modality file the run used
+(`dataset_info.yaml`) and a copy of the run file.
+
+`OXEDataset` needs `robotdataset[oxe]`. Cached episodes load without internet access; missing ones are streamed
+from `gs://gresearch/robotics` on first use. On the RWTH cluster robotdataset points TensorFlow's `gs://` client at
+the system CA bundle itself; set `CURL_CA_BUNDLE` to override (see robotdataset `doc/datasets/oxe.md`).
+
+`finetune_groot/embodiment_config.py`, `run_finetune.py` and the `finetune*.yaml` configs belong to the vendored
+`launch_finetune.py` flow and are unchanged.
 
 ## Install
 

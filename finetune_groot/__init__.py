@@ -1,5 +1,5 @@
-"""Fine-tuning utilities for GR00T-N1.7 on stack_without_ft_tact_v4."""
+"""Fine-tuning plumbing for GR00T-N1.7: the NEW_EMBODIMENT registration and the vendor-flow launcher.
 
-from .data_utils import batch_to_vla_steps, load_dataset_statistics, steps_to_model_batch
-
-__all__ = ["batch_to_vla_steps", "load_dataset_statistics", "steps_to_model_batch"]
+Dataset handling lives in robotdataset (robotdataset.info, robotdataset.adapters.gr00t); finetune_scratch.ipynb
+uses it directly.
+"""
