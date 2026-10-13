@@ -21,13 +21,17 @@ the vendored checkout, re-read its `requires-python` and update only
 
 ## Layout
 
-The two repos are expected to sit side by side (`robotdataset` 0.3.0 is not on
-PyPI yet):
+The two repos are expected to sit side by side (`robotdataset` 0.4.0 is not on
+PyPI yet, and until it is merged into `devel` it lives on the branch `feature/model-adapters`):
 
 ```
 <parent>/
   finetune-groot/      <- this repo, with vendor/Isaac-GR00T checked out
-  robotdataset/
+  robotdataset/        <- branch feature/model-adapters (0.4.0)
+```
+
+```bash
+git -C ../robotdataset fetch origin feature/model-adapters && git -C ../robotdataset switch feature/model-adapters
 ```
 
 ## Install
@@ -72,7 +76,7 @@ github.com, so the install works from inside the job. Activate later with
 
 ```python
 !pip install -q uv
-!git clone https://github.com/svaichu/robotdataset.git /content/robotdataset
+!git clone --branch feature/model-adapters https://github.com/svaichu/robotdataset.git /content/robotdataset
 !git clone --recurse-submodules <finetune-groot-url> /content/finetune-groot
 !apt-get install -y -qq ffmpeg                      # Ubuntu 24.04 ships FFmpeg 6.1
 !cd /content/finetune-groot && uv sync
@@ -85,7 +89,7 @@ notebook. On a T4 (sm75) also set `use_flash_attention: false` in the model
 config — flash-attn needs Ampere or newer; gr00t then falls back to sdpa.
 
 Plain `pip` works too if the interpreter already is 3.10
-(`pip install -e vendor/Isaac-GR00T -e ../robotdataset[hf] -e .`), but you must
+(`pip install -e vendor/Isaac-GR00T -e ../robotdataset[hf,oxe] -e .`), but you must
 install the flash-attn wheel URL from `[tool.uv.sources]` first: pip does not
 read that table, and flash-attn is sdist-only on PyPI (no binary wheel for any
 version), so pip would spend ~1 h compiling CUDA kernels.

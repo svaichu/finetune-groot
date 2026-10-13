@@ -32,7 +32,7 @@ classifiers = [
 # one source of truth for them and no second list to keep in sync.
 dependencies = [
     "gr00t",                    # vendored at vendor/Isaac-GR00T (not on PyPI)
-    "robotdataset[hf]>=0.3.0",  # see [tool.uv.sources] note below
+    "robotdataset[hf,oxe]>=0.4.0",  # see [tool.uv.sources] note below; oxe = tensorflow + tfds for OXEDataset
     "training-cfgs>=0.2.1",     # Config.flatten()/to_argv(), used by run_finetune
 ]
 
@@ -45,9 +45,9 @@ finetune-groot = "finetune_groot.run_finetune:main"
 [tool.uv.sources]
 gr00t = { path = "vendor/Isaac-GR00T", editable = true }
 
-# robotdataset 0.3.0 (gr00t_statistics, relative-action stats) is not on PyPI yet,
+# robotdataset 0.4.0 (dataset info, model adapters, relative-action stats) is not on PyPI yet,
 # so it is consumed from a sibling checkout: <parent>/robotdataset next to this repo.
-# Delete this line once 0.3.0 is published and `pip install` alone will suffice.
+# Delete this line once 0.4.0 is published and `pip install` alone will suffice.
 robotdataset = { path = "../robotdataset", editable = true }
 
 # flash-attn is on PyPI, but sdist-only -- it has never published a binary wheel
