@@ -14,17 +14,19 @@ model:
   load_bf16: true
 
 data:
-  modality_file: configs/scratch/stack_tact_v4.modality.yaml  # relative to the repo root
+  loader: LeRobotVideoDataset
+  kwargs: {repo_id: LSY-lab/stack_without_ft_tact_v4}
+  modality_file: configs/modalities/stack_tact_v4.modality.yaml  # relative to the repo root
   # ints or "a:b" half-open ranges; the held-out episodes never take part in the normalisation statistics
-  train_episodes: ["0:46"]
-  val_episodes: ["46:51"]
+  train_episodes: [0:18]
+  val_episodes: [11:13]
 
 training:
   output_dir: /hpcwork/yn030245/gr00t-ft/checkpoints
   experiment_name: notebook_run  # checkpoints land in <output_dir>/<experiment_name>/
   global_batch_size: 8
   learning_rate: 1.0e-4
-  max_steps: 200
+  max_steps: 10
   warmup_ratio: 0.05
   max_grad_norm: 1.0
   save_steps: 100

@@ -8,3 +8,6 @@ __pycache__/
 *.pyc
 wandb/
 finetune_groot.egg-info/
+*.mp4
+.vscode/
+build/
