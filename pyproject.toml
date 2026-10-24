@@ -15,7 +15,7 @@ readme = "README.md"
 # Dictated by vendor/Isaac-GR00T: the N1.7 release pins requires-python = "==3.10.*".
 # Do not widen this without re-reading vendor/Isaac-GR00T/pyproject.toml first --
 # a mismatch here is what broke the previous environment.
-requires-python = "==3.10.*"
+#requires-python = "==3.10.*"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -46,7 +46,7 @@ finetune-groot = "finetune_groot.run_finetune:main"
 # at 6.32. With protobuf 6.33 locked for other packages, uv silently resolved tensorflow-metadata 0.5.0 instead, whose
 # generated code breaks `import tensorflow_datasets`. Requiring a modern release makes uv lower protobuf instead.
 [tool.uv]
-constraint-dependencies = ["tensorflow-metadata>=1.17.3"]
+# constraint-dependencies = ["tensorflow-metadata>=1.17.3"]
 
 [tool.uv.sources]
 gr00t = { path = "vendor/Isaac-GR00T", editable = true }
@@ -64,7 +64,7 @@ robotdataset = { path = "../robotdataset", editable = true }
 # It is only a uv hint -- the pin (2.7.4.post1) still comes from gr00t.
 # Pre-Ampere GPUs (e.g. Colab T4, sm75) cannot run it: set
 # `use_flash_attention: false` in the model config and gr00t falls back to sdpa.
-flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" }
+# flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.7cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" }
 
 [tool.setuptools.packages.find]
 include = ["finetune_groot*"]
