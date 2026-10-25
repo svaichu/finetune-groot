@@ -81,6 +81,22 @@ def test_stack_tact_file_reproduces_the_legacy_embodiment_config():
         assert _plain(new[modality]) == _plain(legacy[modality]), modality
 
 
+def test_elrobot_file_reproduces_the_embodiment_config():
+    """configs/modalities/elrobot.modality.yaml == finetune_groot/embodiment_config.py (NEW_EMBODIMENT for ElRobot)."""
+    pytest.importorskip("gr00t.data.types")
+    from gr00t.configs.data.embodiment_configs import MODALITY_CONFIGS
+    from gr00t.data.embodiment_tags import EmbodimentTag
+    from robotdataset.adapters.gr00t import Gr00tAdapter
+
+    import finetune_groot.embodiment_config  # noqa: F401  (registers NEW_EMBODIMENT)
+
+    legacy = MODALITY_CONFIGS[EmbodimentTag.NEW_EMBODIMENT.value]
+    new = Gr00tAdapter.from_yaml(REPO / "configs" / "modalities" / "elrobot.modality.yaml").modality_configs()
+    assert set(new) == set(legacy)
+    for modality in legacy:
+        assert _plain(new[modality]) == _plain(legacy[modality]), modality
+
+
 def _code_cells(path: Path):
     nb = json.loads(path.read_text())
     return ["".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code"]

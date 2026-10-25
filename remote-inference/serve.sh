@@ -7,7 +7,7 @@ set -euo pipefail
 
 GR00T_REPO="${GR00T_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/vendor/Isaac-GR00T}"
 
-MODEL_PATH=""
+MODEL_PATH="nvidia/GR00T-N1.7-3B"
 EMBODIMENT_TAG="new_embodiment"
 DEVICE="cuda"
 HOST="0.0.0.0"
