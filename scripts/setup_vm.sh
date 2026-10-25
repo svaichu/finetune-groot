@@ -7,11 +7,12 @@ WORKSPACE="${WORKSPACE:-/workspace}"
 
 # name | url | ref (branch or tag) | submodules (yes/no)
 REPOS=(
-    "ASPIRE|https://github.com/NVlabs/ASPIRE.git|main|yes"
+    "ASPIRE|https://github.com/svaichu/ASPIRE.git|main|yes"
     "finetune-groot|https://github.com/svaichu/finetune-groot.git|main|no"
     "inference-client|https://github.com/svaichu/inference-client.git|main|no"
     "norma-core|https://github.com/norma-core/norma-core.git|main|no"
     "robotdataset|https://github.com/svaichu/robotdataset.git|feature/model-adapters|no"
+    "robotdesigner|https://github.com/svaichu/robotdesigner.git|devel|no"
 )
 
 for entry in "${REPOS[@]}"; do
