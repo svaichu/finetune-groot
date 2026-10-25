@@ -12,8 +12,8 @@
 # kind, dtype and shape describe the data; they are checked against the loader when the file is loaded.
 dataset:
   loader: StationParquetDataset
-  kwargs: {data_dir: /path/to/elrobot/episodes}  # one .parquet file per episode (Station dataset-generator output)
-  episodes_loaded: 1   # placeholder -- update after pointing kwargs.data_dir at the real episode folder
+  kwargs: {data_dir: /workspace/finetune-groot/outputs/elrobot_data}  # one .parquet file per episode (Station dataset-generator output)
+  episodes_loaded: 1
   steps_loaded: 408
   fps: 10.0
 

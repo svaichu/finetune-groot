@@ -1,0 +1,34 @@
+# Run config for finetune_scratch.ipynb (ElRobot / Station, dataset-cheese1.parquet).
+# Select it with FINETUNE_CONFIG=configs/finetune_elrobot.yaml. The notebook reads every hyperparameter,
+# path and split from this file via training_cfgs.Config.from_file(); nothing is hardcoded in it.
+# The dataset itself (loader, its arguments, which modalities feed the model and in which order, action
+# representation, windows) is described by the modality file named under `data`, loaded by Gr00tAdapter.
+
+model:
+  base_model_path: nvidia/GR00T-N1.7-3B
+  embodiment_tag: NEW_EMBODIMENT
+  tune_llm: false
+  tune_visual: false
+  tune_projector: true
+  tune_diffusion_model: true
+  load_bf16: true
+
+data:
+  modality_file: configs/modalities/elrobot.modality.yaml  # relative to the repo root
+  # the sample folder holds a single episode, so it is both the train and the validation episode;
+  # split properly (e.g. "0:N-2" / "N-2:N") once more episodes are recorded
+  train_episodes: [0]
+  val_episodes: [0]
+
+training:
+  output_dir: outputs/checkpoints
+  experiment_name: elrobot_cheese1
+  global_batch_size: 16
+  learning_rate: 1.0e-4
+  max_steps: 500
+  warmup_ratio: 0.05
+  max_grad_norm: 1.0
+  save_steps: 250
+  logging_steps: 10
+  use_wandb: false
+  wandb_project: finetune-gr00t-elrobot
