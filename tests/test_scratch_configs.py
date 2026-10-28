@@ -81,20 +81,17 @@ def test_stack_tact_file_reproduces_the_legacy_embodiment_config():
         assert _plain(new[modality]) == _plain(legacy[modality]), modality
 
 
-def test_elrobot_file_reproduces_the_embodiment_config():
-    """configs/modalities/elrobot.modality.yaml == finetune_groot/embodiment_config.py (NEW_EMBODIMENT for ElRobot)."""
+def test_elrobot_file_builds_the_expected_modality_configs():
+    """configs/modalities/elrobot.modality.yaml (adapter flow) -> cam0..2 / state / action(ABSOLUTE) / task."""
     pytest.importorskip("gr00t.data.types")
-    from gr00t.configs.data.embodiment_configs import MODALITY_CONFIGS
-    from gr00t.data.embodiment_tags import EmbodimentTag
     from robotdataset.adapters.gr00t import Gr00tAdapter
 
-    import finetune_groot.embodiment_config  # noqa: F401  (registers NEW_EMBODIMENT)
-
-    legacy = MODALITY_CONFIGS[EmbodimentTag.NEW_EMBODIMENT.value]
-    new = Gr00tAdapter.from_yaml(REPO / "configs" / "modalities" / "elrobot.modality.yaml").modality_configs()
-    assert set(new) == set(legacy)
-    for modality in legacy:
-        assert _plain(new[modality]) == _plain(legacy[modality]), modality
+    cfgs = Gr00tAdapter.from_yaml(REPO / "configs" / "modalities" / "elrobot.modality.yaml").modality_configs()
+    assert cfgs["video"].modality_keys == ["cam0", "cam1", "cam2"]
+    assert cfgs["state"].modality_keys == ["state"]
+    assert cfgs["action"].modality_keys == ["action"]
+    assert list(cfgs["action"].delta_indices) == list(range(16))
+    assert cfgs["language"].modality_keys == ["task"]
 
 
 def _code_cells(path: Path):

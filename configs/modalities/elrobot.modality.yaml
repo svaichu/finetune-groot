@@ -9,6 +9,9 @@
 #   role   optional override of the role implied by kind: video | state | action | language
 #   split  optional, cuts one vector leaf into named groups: [{name: eef, columns: [0, 6]}, ...]
 #
+# State = each joint's position_norm, action = its goal_norm ([0,1]); camera names cam0..2 and the language key
+# "task" are the literal names inference-client's StationFrame.to_observation() sends.
+#
 # kind, dtype and shape describe the data; they are checked against the loader when the file is loaded.
 dataset:
   loader: StationParquetDataset
@@ -36,7 +39,7 @@ gr00t:
   language:
     default: null       # language_instruction is selected above, so no static fallback is needed
     modality_key: task   # literal key StationFrame.to_observation() builds: observation["language"]["task"]
-  action: {}  # the single "action" group is ABSOLUTE / NON_EEF / DEFAULT (goal_norm, not a delta -- see embodiment_config.py)
+  action: {}  # the single "action" group is ABSOLUTE / NON_EEF / DEFAULT (goal_norm, not a delta; checked on dataset-cheese1.parquet, RMSE(goal[t], pos[t+1]) ~ RMSE(goal[t], pos[t]), so neither delta framing is clearly better)
   # to set a group, replace the {} above with entries named after a modality or split, e.g.:
   #   eef:     {rep: RELATIVE, type: EEF, format: XYZ_ROTVEC, state_key: cartesian}
   #   gripper: {rep: ABSOLUTE, type: NON_EEF}
