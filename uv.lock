@@ -668,7 +668,7 @@ dev = [
 requires-dist = [
     { name = "gr00t", editable = "vendor/Isaac-GR00T" },
     { name = "pytest", marker = "extra == 'dev'" },
-    { name = "robotdataset", extras = ["hf", "oxe"], editable = "../robotdataset" },
+    { name = "robotdataset", extras = ["oxe", "hf"], specifier = ">=0.4.0" },
     { name = "training-cfgs", specifier = ">=0.2.1" },
 ]
 provides-extras = ["dev"]
@@ -2347,7 +2347,7 @@ wheels = [
 [[package]]
 name = "robotdataset"
 version = "0.4.0"
-source = { editable = "../robotdataset" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "imageio", extra = ["ffmpeg"] },
     { name = "ipykernel" },
@@ -2358,6 +2358,10 @@ dependencies = [
     { name = "torch", version = "2.7.1+cu128", source = { registry = "https://download.pytorch.org/whl/cu128" }, marker = "sys_platform == 'linux'" },
     { name = "torchrl" },
     { name = "tqdm" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2e/56/c9a4bc1a862945618fa3e0e4e8905d0defe8e2e5401adcb19585181eb9df/robotdataset-0.4.0.tar.gz", hash = "sha256:6fe9e78a06888c12332b11c09a9df4530d75acc4bdba071a7e361c855dc954f7", size = 132775, upload-time = "2026-10-27T12:35:48.356Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/17/f093b897eda3af73a8fc596d085b1eed4b03c870c8c68e160807cc9dffdf/robotdataset-0.4.0-py3-none-any.whl", hash = "sha256:97a32ce65e2dc63ed3e780564b61172c8a54383c33a0d61d207940778db5b414", size = 113880, upload-time = "2026-10-27T12:35:46.9Z" },
 ]
 
 [package.optional-dependencies]
@@ -2372,34 +2376,6 @@ oxe = [
     { name = "tensorflow" },
     { name = "tensorflow-datasets" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "datasets", marker = "extra == 'all'", specifier = ">=2.14.0" },
-    { name = "datasets", marker = "extra == 'hf'", specifier = ">=2.14.0" },
-    { name = "huggingface-hub", marker = "extra == 'all'", specifier = ">=0.19.0" },
-    { name = "huggingface-hub", marker = "extra == 'hf'", specifier = ">=0.19.0" },
-    { name = "imageio", extras = ["ffmpeg"] },
-    { name = "ipykernel", specifier = ">=6.16.2" },
-    { name = "numpy", specifier = ">=1.21.6" },
-    { name = "pandas", marker = "extra == 'all'", specifier = ">=1.5.0" },
-    { name = "pandas", marker = "extra == 'hf'", specifier = ">=1.5.0" },
-    { name = "pillow", marker = "extra == 'all'", specifier = ">=9.0" },
-    { name = "pillow", marker = "extra == 'hf'", specifier = ">=9.0" },
-    { name = "pyarrow", marker = "extra == 'all'", specifier = ">=10.0.0" },
-    { name = "pyarrow", marker = "extra == 'hf'", specifier = ">=10.0.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "tensordict", specifier = ">=0.2.1" },
-    { name = "tensorflow", marker = "extra == 'all'", specifier = ">=2.11.1" },
-    { name = "tensorflow", marker = "extra == 'oxe'", specifier = ">=2.11.1" },
-    { name = "tensorflow-datasets", marker = "extra == 'all'", specifier = ">=4.8.2" },
-    { name = "tensorflow-datasets", marker = "extra == 'oxe'", specifier = ">=4.8.2" },
-    { name = "torch", specifier = ">=1.13.1" },
-    { name = "torchrl", specifier = ">=0.2.0" },
-    { name = "tqdm", specifier = ">=4.64.0" },
-]
-provides-extras = ["oxe", "hf", "dev", "all"]
 
 [[package]]
 name = "safetensors"
