@@ -1,0 +1,25 @@
+# robotdataset dataset-info for demonstrations recorded in the gr3-humanoid env (LeRobot format, ~20 Hz control).
+# TEMPLATE: generate/refresh with `python -m robotdataset.info --loader LeRobotVideoDataset --kwargs '{"repo_id": ...}'
+# --adapter gr00t -o configs/modalities/gr3_pickup.modality.yaml` once demos exist, then check names match below.
+dataset:
+  loader: LeRobotVideoDataset
+  kwargs: {repo_id: CHANGE_ME/gr3_pickup}
+  fps: 20.0
+
+modalities:
+  - {use: true, path: observation/images/front,       kind: image,  dtype: uint8,   shape: [224, 224, 3], name: front}
+  - {use: true, path: observation/images/agent,       kind: image,  dtype: uint8,   shape: [224, 224, 3], name: agent}
+  - {use: true, path: observation/state/right_arm,     kind: state,  dtype: float32, shape: [7],           name: right_arm}
+  - {use: true, path: observation/state/right_gripper, kind: state,  dtype: float32, shape: [2],           name: right_gripper}
+  - {use: true, path: action,                          kind: action, dtype: float32, shape: [9],
+     name: action, split: [{name: right_arm, columns: [0, 7]}, {name: right_gripper, columns: [7, 9]}]}
+  - {use: true, path: observation/language_instruction, kind: text,  dtype: string,  shape: [],            name: language_instruction}
+
+gr00t:
+  action_horizon: 16
+  video_delta: [0]
+  state_delta: [0]
+  language:
+    default: pick up the red cube
+    modality_key: annotation.human.task_description
+  action: {}  # both groups ABSOLUTE / NON_EEF / DEFAULT: absolute joint-position targets
